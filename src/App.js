@@ -1,23 +1,65 @@
 import logo from './logo.svg';
 import './App.css';
+import Table from './components/table';
+import axios from 'axios';
+import { useEffect, useState } from 'react'
 
 function App() {
+  const [ laureatesState, setLaureatesState ] = useState([]);
+  const [searchVal, setSearchVal] = useState("");
+  
+  let filteredLaureatesState = (searchVal === "" ) ? laureatesState : laureatesState.filter((item) => item.firstname.toLowerCase().includes(searchVal.toLowerCase()))
+  console.log(filteredLaureatesState)
+
+  useEffect(() =>{
+    axios.get('https://api.nobelprize.org/v1/laureate.json')
+        .then((response) => {
+          for(let i = 0; i <=100; i++){
+            let result = response.data.laureates[i];
+            setLaureatesState(laureatesState => [...laureatesState, {
+              "id": `${result.id}`,
+              "firstname": `${result.firstname}`,
+              "surname": `${result.surname}`,
+              "born": `${result.born}`,
+              "died": `${result.died}`,
+              }]);
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+  },[])
+
+  // console.log(laureatesState)
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+    <input type="search" onChange={(e) => setSearchVal(e.target.value)} placeholder="Search..."/>
+
+     <table>
+      <thead>
+        <tr>
+          <td>id</td>
+          <td>first name</td>
+          <td>surname</td>
+          <td>born</td>
+          <td>died</td>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredLaureatesState 
+       .map((item, index) => (
+         <tr key={index}>
+           <td>{item.id}</td>
+           <td>{item.firstname}</td>
+           <td>{item.surname}</td>
+           <td>{item.born}</td>
+           <td>{item.died}</td>
+         </tr>
+       ))} 
+      </tbody>
+          
+     </table>
     </div>
   );
 }
