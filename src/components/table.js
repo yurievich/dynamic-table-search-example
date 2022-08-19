@@ -6,7 +6,7 @@ export default function Table(){
     const [ laureatesState, setLaureatesState ] = useState([]);
     const [searchVal, setSearchVal] = useState("");
     
-    let filteredLaureatesState = (searchVal === "" ) ? laureatesState : laureatesState.filter((item) => item.firstname.toLowerCase().includes(searchVal.toLowerCase()))
+    let filteredLaureatesState = (searchVal === "" ) ? laureatesState : laureatesState.filter((item) => item.firstname.toLowerCase().includes(searchVal.toLowerCase()) || item.surname.toLowerCase().includes(searchVal.toLowerCase())) 
     console.log(filteredLaureatesState)
 
 
@@ -24,7 +24,7 @@ export default function Table(){
                   "died": `${result.died}`,
                   }) ;
                 }
-              console.log(finalArrays)
+            //   console.log(finalArrays)
               setLaureatesState(finalArrays)
             })
             .catch((error) => {
